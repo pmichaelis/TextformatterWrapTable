@@ -8,8 +8,8 @@ The css classes for the wrapper and the table are configurable.
 
 by default the module produces the following markup:
 
-<div class="table-responsive">
-    <table class="table">
-    ...
-    </table>
-</div>
+    <div class="table-responsive">
+        <table class="table">
+        ...
+        </table>
+    </div>
