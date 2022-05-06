@@ -1,6 +1,6 @@
 # Processwire - Wrap Table
 
-Processwire wrap table module is a textformatter module fpr processwire CMS/CMF. It is warapping markup tables with a div container.
+Processwire wrap table module is a textformatter module for processwire CMS/CMF. It is wrapping markup tables with a div container.
 wrapping tables with div containers simplifies the process of displaying responsive tables in the frontend.
 
 The css classes for the wrapper and the table are configurable.
