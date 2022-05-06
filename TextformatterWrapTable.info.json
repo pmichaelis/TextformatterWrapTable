@@ -1,0 +1,13 @@
+{
+    "title": "Wrap Table",
+    "version": "1.0.0",
+    "summary": "Wrap a container div around markup tables.",
+    "author": "Philipp Michaelis (pmichaelis)",
+    "href": "",
+    "icon": "table",
+    "requires": [
+        "PHP>=7.0.0",
+        "ProcessWire>=3.0.0"
+    ],
+    "autoload": true
+}
