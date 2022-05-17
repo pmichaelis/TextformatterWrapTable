@@ -65,34 +65,37 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
     public function format(&$string)
     {
 
-        $dom = new \DOMDocument('1.0', 'utf-8');
-        $dom->loadHTML($string);
-        $selector = new \DOMXPath($dom);
-        $length = $dom->getElementsByTagName('table')->length;
+        if ($string) {
+            $dom = new \DOMDocument('1.0', 'utf-8');
+            $dom->loadHTML($string);
+            $selector = new \DOMXPath($dom);
+            $length = $dom->getElementsByTagName('table')->length;
 
-        for ($i = 0; $i < $length; $i++) {
+            for ($i = 0; $i < $length; $i++) {
 
-            $table = $dom->getElementsByTagName("table")->item($i);
-            $parent = $table->parentNode;
+                $table = $dom->getElementsByTagName("table")->item($i);
+                $parent = $table->parentNode;
 
-            if ($parent && $parent->tagName != 'div') {
+                if ($parent && $parent->tagName != 'div') {
 
-                # set table class
-                $table->setAttribute('class', $this->tableClass);
+                    # set table class
+                    $table->setAttribute('class', $this->tableClass);
 
-                # create new wrapper div
-                $div = $dom->createElement('div');
-                $div->setAttribute('class', $this->divClass);
+                    # create new wrapper div
+                    $div = $dom->createElement('div');
+                    $div->setAttribute('class', $this->divClass);
 
-                $clone = $div->cloneNode();
-                $table->parentNode->replaceChild($clone, $table);
-                $clone->appendChild($table);
+                    $clone = $div->cloneNode();
+                    $table->parentNode->replaceChild($clone, $table);
+                    $clone->appendChild($table);
 
-                # wire('log')->save('debug', $dom->saveXML($clone));
+                    # wire('log')->save('debug', $dom->saveXML($clone));
+                }
             }
-        }
 
-        $string = utf8_decode($dom->saveHTML($dom->documentElement));
+            $string = trim(utf8_decode($dom->saveHTML($dom->documentElement)));
+        }
+        
     }
 
 
@@ -115,6 +118,5 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
         $data['tableClass'] = wire('sanitizer')->pageNameTranslate($data['tableClass']);
 
         $event->arguments(1, $data);
-
     }
 }
