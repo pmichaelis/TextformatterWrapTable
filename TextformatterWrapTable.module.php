@@ -67,7 +67,8 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
 
         if ($string) {
             $dom = new \DOMDocument('1.0', 'utf-8');
-            $dom->loadHTML($string, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            // fix bug, see https://stackoverflow.com/a/22490902/6370411
+            $dom->loadHTML($string);
             $selector = new \DOMXPath($dom);
             $length = $dom->getElementsByTagName('table')->length;
 
@@ -79,11 +80,11 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
                 if ($parent && $parent->tagName != 'div') {
 
                     # set table class
-                    $table->setAttribute('class', $this->tableClass);
+                    $table->setAttribute('class', (string)$this->tableClass);
 
                     # create new wrapper div
                     $div = $dom->createElement('div');
-                    $div->setAttribute('class', $this->divClass);
+                    $div->setAttribute('class', (string)$this->divClass);
 
                     $clone = $div->cloneNode();
                     $table->parentNode->replaceChild($clone, $table);
@@ -93,9 +94,20 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
                 }
             }
 
-            $string = trim(utf8_decode($dom->saveHTML($dom->documentElement)));
+            $html = $dom->saveHTML($dom->documentElement);
+            if (strpos($html, "<html><body>") === 0) $html = substr($html, 12);
+            if ($this->endsWidth($html, "</body></html>")) $html = substr($html, 0, -14);
+            $string = trim(utf8_decode($html));
         }
-        
+    }
+
+    public function endsWidth($haystack, $needle)
+    {
+        $length = strlen($needle);
+        if (!$length) {
+            return true;
+        }
+        return substr($haystack, -$length) === $needle;
     }
 
 
@@ -107,8 +119,6 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
      */
     public function checkConfigValues(HookEvent $event)
     {
-
-
         $classname = $event->arguments[0];
         if ($classname !== $this->className) return;
 
