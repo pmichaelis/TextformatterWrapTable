@@ -122,10 +122,26 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
         $classname = $event->arguments[0];
         if ($classname !== $this->className) return;
 
-        # modify data
+        # data
         $data = $event->arguments(1);
-        $data['divClass'] = wire('sanitizer')->pageNameTranslate($data['divClass']);
-        $data['tableClass'] = wire('sanitizer')->pageNameTranslate($data['tableClass']);
+
+        # modify div classes
+        $divClassesRaw = explode(' ', $data['divClass']);
+        $divClasses = array();
+        foreach ($divClassesRaw as $class) {
+            $divClasses[] = wire('sanitizer')->pageNameTranslate($class);
+        }
+
+        $data['divClass'] = implode(' ', $divClasses);
+
+        # modify table classes
+        $tableClassesRaw = explode(' ', $data['tableClass']);
+        $tableClasses = array();
+        foreach ($tableClassesRaw as $class) {
+            $tableClasses[] = wire('sanitizer')->pageNameTranslate($class);
+        }
+
+        $data['tableClass'] = implode(' ', $tableClasses);
 
         $event->arguments(1, $data);
     }
