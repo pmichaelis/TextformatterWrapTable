@@ -97,7 +97,7 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
             $html = $dom->saveHTML($dom->documentElement);
             if (strpos($html, "<html><body>") === 0) $html = substr($html, 12);
             if ($this->endsWidth($html, "</body></html>")) $html = substr($html, 0, -14);
-            $string = trim(utf8_decode($html));
+            $string = trim(mb_convert_encoding($html, "UTF-8"));
         }
     }
 
