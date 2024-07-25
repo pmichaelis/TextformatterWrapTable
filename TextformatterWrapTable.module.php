@@ -67,8 +67,9 @@ class TextformatterWrapTable extends Textformatter implements Module, Configurab
 
         if ($string) {
             $dom = new \DOMDocument('1.0', 'utf-8');
-            // fix bug, see https://stackoverflow.com/a/22490902/6370411
-            $dom->loadHTML($string);
+            // fix bug 1, see https://stackoverflow.com/a/22490902/6370411
+            // fix bug 2, see https://stackoverflow.com/a/8218649
+            $dom->loadHTML(mb_encode_numericentity($string, [0x80, 0x10FFFF, 0, ~0], 'UTF-8'), LIBXML_NOERROR);
             $selector = new \DOMXPath($dom);
             $length = $dom->getElementsByTagName('table')->length;
 
